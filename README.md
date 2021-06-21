@@ -30,7 +30,7 @@ Abaixo segue o passo a passo para executar o projeto e realizar os testes
 ### Rotas e Funcionalidades
 
 - Documentação no Postman:
-        [Clique aqui para visualizar a documentação da API](https://documenter.getpostman.com/view/9534004/Tzeah5gb).
+    - [Clique aqui para visualizar a documentação da API](https://documenter.getpostman.com/view/9534004/Tzeah5gb).
 - Resumo das funcionalidades:
     - Autenticação da API
     - Busca dos Voos
