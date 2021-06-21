@@ -2,14 +2,21 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
+
+    protected $table = 'users';
+
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -17,9 +24,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'sUser',
+        'sPassword',
     ];
 
     /**
@@ -28,16 +34,23 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'sPassword'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function registerAccess(Array $inputs)
+    {
+        try {
+            DB::beginTransaction();
+            $user = User::create([
+                'sUser' => $inputs['sUser'],
+                'sPassword' => bcrypt($inputs['sPassword'])
+            ]);
+            $token = $user->createToken($inputs['sUser'])->plainTextToken;
+            DB::commit();
+            return $token;
+        } catch (Exception $erro) {
+            DB::rollback();
+            throw new Exception($erro->getMessage(), 1);
+        }
+    }
 }
